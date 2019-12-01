@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" type="text/css" href="vue/index.css">
+</head>
+<body>
+  <div id="app">
+      <h1>페널티 업데이트</h1>
+    <dynamic-form 
+        v-model="dataPEN" 
+        lang="ko_KR"
+        :descriptors="descriptorsPEN">
+        <template slot="operations">
+            <el-button v-on:click="updatePenalty">페널티 업데이트</el-button>
+        </template>
+    </dynamic-form>
+  </div>
+</body>
+  <!-- import Vue and ElementUI before vue-dynamic-from-component -->
+  <script src="vue/vue.min.js"></script>
+  <script src="vue/index.js"></script>
+  <!-- import JavaScript -->
+  <script src="vue/axios.min.js"></script>
+  <script src="vue/vue-dynamic-form-component.umd.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: function () {
+        return {
+          dataPEN: {},
+          descriptorsPEN: {
+            'Car ID': { type: 'string', required: true },
+            'Penalty': { type: 'string', required: true }
+          }
+        }
+      },
+      methods: {
+        updatePenalty: function(){
+            axios.post('http://10.42.0.1:5000/updatepenalty', {
+            car_id: this.dataPEN["Car ID"],
+            penalty: this.dataPEN["Penalty"]
+          })
+            .then(function(response) {
+                var res = response.data.result;
+                if (res == "success"){
+                    alert("페널티 업데이트 성공");
+                }else{
+                    alert("페널티 업데이트 실패");
+                }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
+      }
+    })
+  </script>
+</html>
